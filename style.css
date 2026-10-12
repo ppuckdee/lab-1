@@ -1,8 +1,136 @@
 body {
     font: 100%/1.5 system-ui;
-  }
-  
-  img {
+    max-width: 100ch;
+    margin-inline: auto;
+    padding: 1rem;
+}
+
+img {
     max-width: 100%;
     height: auto;
-  }
+}
+
+nav ul,
+nav li {
+    display: contents;
+}
+
+nav {
+    display: flex;
+    margin-bottom: 1em;
+    border-bottom: 1px solid oklch(80% 3% 200);
+}
+
+nav a {
+    flex: 1;
+    text-decoration: none;
+    color: inherit;
+    text-align: center;
+    padding: 0.5em;
+}
+
+nav a.current {
+    border-bottom: 0.4em solid oklch(80% 3% 200);
+    padding-bottom: 0.1em;
+}
+
+html {
+    --color-accent: #003366;
+    accent-color: var(--color-accent);
+}
+
+nav a:hover {
+    border-bottom: 0.4em solid var(--color-accent);
+    padding-bottom: 0.1em;
+    background-color: oklch(from var(--color-accent) 95% 5% h);
+}
+
+input,
+textarea,
+button {
+    font: inherit;
+}
+
+form {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1em;
+}
+
+form label {
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+}
+
+form button {
+    grid-column: 1 / -1;
+}
+
+.projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));
+    gap: 1em;
+}
+
+.projects article {
+    display: grid;
+    grid-template-rows: subgrid;
+    grid-row: span 3;
+    gap: 1em;
+}
+
+.projects article h2,
+.projects article p {
+    margin: 0;
+}
+
+h1 {
+    font-size: 400%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    line-height: 1.1;
+    text-wrap: balance;
+}
+
+/* Resume page */
+.resume h1 {
+    font-size: 300%;
+    margin-bottom: 1rem;
+}
+
+.resume section {
+    margin-block: 2rem;
+}
+
+.resume h2 {
+    color: var(--color-accent);
+    border-bottom: 2px solid var(--color-accent);
+    padding-bottom: 0.4rem;
+}
+
+.resume article {
+    margin-block: 1.5rem;
+}
+
+.resume h3 {
+    margin-bottom: 0.4rem;
+}
+
+.resume article p {
+    margin-block: 0.4rem;
+}
+
+.resume ul {
+    padding-left: 1.5rem;
+}
+
+.resume li {
+    margin-block: 0.5rem;
+}
+
+.resume time {
+    color: oklch(45% 2% 200);
+    font-variant-numeric: tabular-nums;
+}
