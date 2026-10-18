@@ -134,3 +134,59 @@ h1, h2, h3, h4, h5, h6 {
     color: oklch(45% 2% 200);
     font-variant-numeric: tabular-nums;
 }
+
+/* Lab 3: light and dark themes */
+html {
+    color-scheme: light dark;
+    --color-accent: light-dark(#003366, #8fc8ff);
+    accent-color: var(--color-accent);
+}
+
+body {
+    padding-top: 4rem;
+    background: Canvas;
+    color: CanvasText;
+}
+
+/* Theme dropdown */
+.color-scheme {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 80%;
+}
+
+.color-scheme select {
+    margin-left: 0.35rem;
+    padding: 0.2em;
+}
+
+select {
+    font: inherit;
+}
+
+/* Navigation colors */
+nav {
+    --border-color: oklch(50% 10% 200 / 40%);
+    border-bottom: 1px solid var(--border-color);
+}
+
+nav a.current {
+    border-bottom: 0.4em solid var(--border-color);
+}
+
+nav a:hover {
+    background-color: color-mix(
+        in oklch,
+        var(--color-accent),
+        Canvas 85%
+    );
+}
+
+/* Keep resume dates readable in both themes */
+.resume time {
+    color: light-dark(
+        oklch(45% 2% 200),
+        oklch(78% 2% 200)
+    );
+}
