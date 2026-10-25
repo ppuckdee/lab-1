@@ -1,0 +1,78 @@
+[
+  {
+    "title": "Triton Refill",
+    "year": 2026,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "A UCSD water-station finder that helps users find nearby stations and get directions. I cleaned and validated 84 station records using Python and pandas. Tools: ArcGIS Online, Experience Builder, Python, and pandas.",
+    "url": "https://experience.arcgis.com/experience/e5cdd600df2146a3a2d6cdd035e79d67"
+  },
+  {
+    "title": "RallyView",
+    "year": 2026,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "A pickleball court map with public live cameras and court details. I am prototyping a Python workflow to detect players and estimate court occupancy. Tools: ArcGIS Online, Experience Builder, Python, and Google Colab. Status: In progress.",
+    "url": "https://experience.arcgis.com/experience/907b7dd0c4e243349823a3b8942b9967"
+  },
+  {
+    "title": "Project 2: U.S. Carbon Emissions",
+    "year": 2026,
+    "image": "https://ppuckdee.github.io/lab-1/project2/images/supporting-chart.png",
+    "description": "Two charts that use the same emissions dataset to argue different sides of a claim about U.S. progress in reducing carbon emissions.",
+    "url": "https://ppuckdee.github.io/lab-1/project2/"
+  },
+  {
+    "title": "Project 1: Expository Visualization",
+    "year": 2026,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "A DSC 209R course project about using visualizations to explain a dataset."
+  },
+  {
+    "title": "Portfolio Website",
+    "year": 2026,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "My portfolio website for DSC 209R Labs 1–4. It uses HTML, CSS, and JavaScript to display projects, switch themes, and load GitHub statistics.",
+    "url": "https://ppuckdee.github.io/lab-1/"
+  },
+  {
+    "title": "Sample Project 6",
+    "year": 2025,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "Placeholder project with a sample year for the lab."
+  },
+  {
+    "title": "Sample Project 7",
+    "year": 2025,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "Placeholder project with a sample year for the lab."
+  },
+  {
+    "title": "Sample Project 8",
+    "year": 2025,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "Placeholder project with a sample year for the lab."
+  },
+  {
+    "title": "Sample Project 9",
+    "year": 2024,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "Placeholder project with a sample year for the lab."
+  },
+  {
+    "title": "Sample Project 10",
+    "year": 2024,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "Placeholder project with a sample year for the lab."
+  },
+  {
+    "title": "Sample Project 11",
+    "year": 2024,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "Placeholder project with a sample year for the lab."
+  },
+  {
+    "title": "Sample Project 12",
+    "year": 2024,
+    "image": "https://vis-society.github.io/labs/2/images/empty.svg",
+    "description": "Placeholder project with a sample year for the lab."
+  }
+]
