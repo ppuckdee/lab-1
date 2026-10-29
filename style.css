@@ -190,3 +190,72 @@ nav a:hover {
         oklch(78% 2% 200)
     );
 }
+
+#projects-plot {
+  max-width: 20em;
+  margin-block: 2em;
+  overflow: visible;
+}
+
+.pie-container {
+  display: flex;
+  align-items: center;
+  gap: 2em;
+  flex-wrap: wrap;
+}
+
+.legend {
+  flex: 1;
+  min-width: 12em;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9em, 1fr));
+  gap: 1em;
+  padding: 1em;
+  border: 1px solid #ccc;
+  list-style: none;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.swatch {
+  display: inline-block;
+  width: 1em;
+  aspect-ratio: 1;
+  background: var(--color);
+  border-radius: 0.2em;
+  flex-shrink: 0;
+}
+
+#projects-plot path {
+  transition: opacity 300ms;
+  cursor: pointer;
+}
+
+#projects-plot:has(path:hover) path:not(:hover) {
+  opacity: 0.5;
+}
+
+.selected {
+  --color: oklch(60% 45% 0) !important;
+}
+
+#projects-plot path.selected {
+  fill: var(--color);
+}
+
+.searchBar {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  padding: 0.6em;
+  margin-block: 1em 2em;
+}
+
+.legend-item {
+  cursor: pointer;
+}
