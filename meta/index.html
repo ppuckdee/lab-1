@@ -6,13 +6,43 @@
     <title>Meta | Nicholas Puckdee</title>
     <link rel="stylesheet" href="../style.css" />
     <script type="module" src="../global.js"></script>
+    <script type="module" src="main.js"></script>
   </head>
   <body>
     <h1>Meta</h1>
-    <p>
-      This page explores the code and commit history of my portfolio.
-    </p>
+    <p>This page explores the code and commit history of my portfolio.</p>
 
     <div id="stats"></div>
+    <h2>Commits by time of day</h2>
+    <p>
+      Hover over a dot for commit details. Click a dot to open its GitHub
+      commit. Dot area represents the number of current lines attributed to that
+      commit.
+    </p>
+    <div id="chart"></div>
+    <p>Drag from an empty area of the chart to select commits.</p>
+    <button id="clear-selection" type="button">Clear selection</button>
+    <p id="selection-count" aria-live="polite">No commits selected</p>
+
+    <h3>Languages in selected commits</h3>
+    <dl id="language-breakdown" class="stats"></dl>
+    <dl id="commit-tooltip" class="info tooltip" hidden>
+      <dt>Commit</dt>
+      <dd>
+        <a id="commit-link" target="_blank" rel="noopener noreferrer"></a>
+      </dd>
+
+      <dt>Date</dt>
+      <dd id="commit-date"></dd>
+
+      <dt>Time</dt>
+      <dd id="commit-time"></dd>
+
+      <dt>Author</dt>
+      <dd id="commit-author"></dd>
+
+      <dt>Lines attributed</dt>
+      <dd id="commit-lines"></dd>
+    </dl>
   </body>
 </html>

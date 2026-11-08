@@ -259,3 +259,116 @@ nav a:hover {
 .legend-item {
   cursor: pointer;
 }
+
+/* Lab 6: Meta summary statistics */
+#stats .stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 1.5rem;
+  margin-block: 2rem;
+}
+
+#stats .stats dt {
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
+#stats .stats dd {
+  margin: 0.25rem 0 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Lab 6: commit scatterplot */
+#chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+#chart .gridlines line {
+  stroke: currentColor;
+  stroke-opacity: 0.15;
+}
+
+#chart .gridlines .domain {
+  display: none;
+}
+
+/* Lab 6: commit tooltip and dots */
+#commit-tooltip {
+  position: fixed;
+  z-index: 1000;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.4rem 1rem;
+  margin: 0;
+  padding: 1rem;
+  max-width: min(22rem, calc(100vw - 2rem));
+  box-sizing: border-box;
+  background: Canvas;
+  color: CanvasText;
+  border: 1px solid color-mix(in srgb, CanvasText 25%, Canvas);
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 18%);
+  font-size: 0.9rem;
+  pointer-events: none;
+}
+
+#commit-tooltip[hidden] {
+  display: none;
+}
+
+#commit-tooltip dt {
+  opacity: 0.7;
+}
+
+#commit-tooltip dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+#chart .dots circle {
+  fill-opacity: 0.7;
+  cursor: pointer;
+  transform-origin: center;
+  transform-box: fill-box;
+  transition: transform 150ms, fill-opacity 150ms;
+}
+
+#chart .dots circle:hover,
+#chart .dots circle:focus {
+  fill-opacity: 1;
+  transform: scale(1.15);
+}
+
+/* Lab 6: brush selection */
+#chart .dots circle.selected {
+  fill: #ff6b6b;
+}
+
+#chart .brush .selection {
+  fill: steelblue;
+  fill-opacity: 0.12;
+  stroke: currentColor;
+  stroke-opacity: 0.6;
+  stroke-dasharray: 4 3;
+}
+
+#language-breakdown {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 1.5rem;
+  max-width: 24rem;
+}
+
+#language-breakdown dt {
+  font-weight: 600;
+}
+
+#language-breakdown dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
