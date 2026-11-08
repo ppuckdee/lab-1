@@ -1,3 +1,6 @@
+// Adapted from the official DSC 209R Lab 6 instructions:
+// https://github.com/dsc-courses/dsc209r-2026-fa/blob/main/docs/labs/lab06/index.md
+
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
 async function loadData() {
