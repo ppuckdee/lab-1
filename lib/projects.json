@@ -1,5 +1,12 @@
 [
   {
+    "title": "Bikewatching",
+    "year": 2026,
+    "image": "https://ppuckdee.github.io/lab-1/images/bikewatching.png",
+    "description": "An interactive map of Bluebikes traffic in Boston and Cambridge.",
+    "url": "https://ppuckdee.github.io/bikewatching/"
+  },
+  {
     "title": "Triton Refill",
     "year": 2026,
     "image": "https://vis-society.github.io/labs/2/images/empty.svg",
