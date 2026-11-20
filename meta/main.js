@@ -1,7 +1,9 @@
-// Adapted from the official DSC 209R Lab 6 instructions:
+// Adapted from the official DSC 209R Lab 6 and Lab 8 instructions:
 // https://github.com/dsc-courses/dsc209r-2026-fa/blob/main/docs/labs/lab06/index.md
+// https://github.com/dsc-courses/dsc209r-2026-fa/blob/main/docs/labs/lab08/index.md
 
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
+import scrollama from "https://cdn.jsdelivr.net/npm/scrollama@3.2.0/+esm";
 
 async function loadData() {
   return d3.csv(new URL("loc.csv", import.meta.url), (row) => ({
@@ -40,13 +42,14 @@ function processCommits(data) {
       });
 
       return commit;
-    });
+    })
+    .sort((a, b) => a.datetime - b.datetime);
 }
 
 function renderCommitInfo(data, commits) {
   const fileLengths = d3.rollups(
     data,
-    (lines) => d3.max(lines, (d) => d.line),
+    (lines) => lines.length,
     (d) => d.file,
   );
 
@@ -54,9 +57,18 @@ function renderCommitInfo(data, commits) {
   const decimal = d3.format(".1f");
 
   const stats = [
-    { label: "Total lines of code", value: integer(data.length) },
-    { label: "Commits represented", value: integer(commits.length) },
-    { label: "Files", value: integer(fileLengths.length) },
+    {
+      label: "Total lines of code",
+      value: integer(data.length),
+    },
+    {
+      label: "Commits represented",
+      value: integer(commits.length),
+    },
+    {
+      label: "Files",
+      value: integer(fileLengths.length),
+    },
     {
       label: "Maximum file length (lines)",
       value: integer(d3.max(fileLengths, (d) => d[1]) ?? 0),
@@ -90,9 +102,7 @@ function renderCommitInfo(data, commits) {
     );
 }
 
-function createBrushSelector(svg, commits, xScale, yScale, plot) {
-  const dots = svg.select(".dots").selectAll("circle");
-
+function createBrushSelector(svg, xScale, yScale, plot) {
   const brush = d3
     .brush()
     .extent([
@@ -105,7 +115,7 @@ function createBrushSelector(svg, commits, xScale, yScale, plot) {
       const selection = event.selection;
 
       const selectedCommits = selection
-        ? commits.filter((commit) => {
+        ? filteredCommits.filter((commit) => {
             const [[x0, y0], [x1, y1]] = selection;
             const x = xScale(commit.datetime);
             const y = yScale(commit.hourFrac);
@@ -116,7 +126,10 @@ function createBrushSelector(svg, commits, xScale, yScale, plot) {
 
       const selectedIds = new Set(selectedCommits.map((d) => d.id));
 
-      dots.classed("selected", (d) => selectedIds.has(d.id));
+      svg
+        .select(".dots")
+        .selectAll("circle")
+        .classed("selected", (d) => selectedIds.has(d.id));
 
       const count = selectedCommits.length;
 
@@ -143,6 +156,7 @@ function createBrushSelector(svg, commits, xScale, yScale, plot) {
         const percentage = d3.format(".1~%")(lineCount / lines.length);
 
         container.append("dt").text(language.toUpperCase());
+
         container
           .append("dd")
           .text(`${d3.format(",")(lineCount)} lines (${percentage})`);
@@ -154,15 +168,22 @@ function createBrushSelector(svg, commits, xScale, yScale, plot) {
   // Keep the dots above the brush overlay so tooltips still work.
   svg.select(".dots").raise();
 
-  d3.select("#clear-selection").on("click", () => {
-    brushLayer.call(brush.move, null);
-  });
+  const clearSelection = () => brushLayer.call(brush.move, null);
+
+  d3.select("#clear-selection").on("click", clearSelection);
+
+  return clearSelection;
 }
 
 function renderScatterPlot(commits) {
   const width = 1000;
   const height = 600;
-  const margin = { top: 20, right: 30, bottom: 65, left: 75 };
+  const margin = {
+    top: 20,
+    right: 30,
+    bottom: 65,
+    left: 75,
+  };
 
   const plot = {
     left: margin.left,
@@ -243,46 +264,24 @@ function renderScatterPlot(commits) {
     .domain([0, d3.max(commits, (d) => d.totalLines) || 1])
     .range([0, 30]);
 
-  // Draw smaller dots last so they remain easier to hover.
-  const sortedCommits = d3.sort(commits, (d) => -d.totalLines);
+  svg.append("g").attr("class", "dots");
 
-  svg
-    .append("g")
-    .attr("class", "dots")
-    .selectAll("circle")
-    .data(sortedCommits)
-    .join("circle")
-    .attr("cx", (d) => xScale(d.datetime))
-    .attr("cy", (d) => yScale(d.hourFrac))
-    .attr("r", (d) => rScale(d.totalLines))
-    .attr("fill", "steelblue")
-    .attr("tabindex", 0)
-    .attr("role", "link")
-    .attr("aria-label", (d) => `View commit ${d.id} on GitHub`)
-    .on("mouseenter", showTooltip)
-    .on("mousemove", positionTooltip)
-    .on("mouseleave", hideTooltip)
-    .on("focus", (event, commit) => {
-      const bounds = event.currentTarget.getBoundingClientRect();
-      showTooltip({ clientX: bounds.right, clientY: bounds.top }, commit);
-    })
-    .on("blur", hideTooltip)
-    .on("click", (event, commit) => {
-      window.open(commit.url, "_blank", "noopener,noreferrer");
-    })
-    .on("keydown", (event, commit) => {
-      if (event.key === "Enter") {
-        window.open(commit.url, "_blank", "noopener,noreferrer");
-      }
-    });
+  const clearSelection = createBrushSelector(svg, xScale, yScale, plot);
 
-  createBrushSelector(svg, commits, xScale, yScale, plot);
+  return {
+    svg,
+    xScale,
+    yScale,
+    rScale,
+    clearSelection,
+  };
 }
 
 const data = await loadData();
 const commits = processCommits(data);
 
-renderCommitInfo(data, commits);
+let filteredCommits = commits;
+let commitProgress = 100;
 
 function positionTooltip(event) {
   const tooltip = document.getElementById("commit-tooltip");
@@ -304,19 +303,25 @@ function positionTooltip(event) {
 
 function showTooltip(event, commit) {
   const link = document.getElementById("commit-link");
+
   link.href = commit.url;
   link.textContent = commit.id;
 
   document.getElementById("commit-date").textContent =
-    commit.datetime.toLocaleDateString(undefined, { dateStyle: "full" });
+    commit.datetime.toLocaleDateString(undefined, {
+      dateStyle: "full",
+    });
 
   document.getElementById("commit-time").textContent =
-    commit.datetime.toLocaleTimeString(undefined, { timeStyle: "short" });
+    commit.datetime.toLocaleTimeString(undefined, {
+      timeStyle: "short",
+    });
 
   document.getElementById("commit-author").textContent = commit.author;
   document.getElementById("commit-lines").textContent = commit.totalLines;
 
   document.getElementById("commit-tooltip").hidden = false;
+
   positionTooltip(event);
 }
 
@@ -324,4 +329,224 @@ function hideTooltip() {
   document.getElementById("commit-tooltip").hidden = true;
 }
 
-renderScatterPlot(commits);
+const chart = renderScatterPlot(commits);
+
+const timeScale = d3
+  .scaleTime()
+  .domain(d3.extent(commits, (d) => d.datetime))
+  .range([0, 100]);
+
+const technologyColors = d3
+  .scaleOrdinal()
+  .domain([...new Set(data.map((d) => d.type))].sort())
+  .range(d3.schemeTableau10);
+
+function updateScatterPlot() {
+  const { svg, xScale, yScale, rScale } = chart;
+
+  // A commit keeps its identity, position, and size when the cutoff changes.
+  svg
+    .select(".dots")
+    .selectAll("circle")
+    .data(
+      d3.sort(filteredCommits, (d) => -d.totalLines),
+      (d) => d.id,
+    )
+    .join("circle")
+    .attr("cx", (d) => xScale(d.datetime))
+    .attr("cy", (d) => yScale(d.hourFrac))
+    .attr("r", (d) => rScale(d.totalLines))
+    .attr("fill", "steelblue")
+    .attr("tabindex", 0)
+    .attr("role", "link")
+    .attr(
+      "aria-label",
+      (d) => `View commit ${d.id}, ${d.totalLines} lines, on GitHub`,
+    )
+    .on("mouseenter", showTooltip)
+    .on("mousemove", positionTooltip)
+    .on("mouseleave", hideTooltip)
+    .on("focus", (event, commit) => {
+      const bounds = event.currentTarget.getBoundingClientRect();
+
+      showTooltip(
+        {
+          clientX: bounds.right,
+          clientY: bounds.top,
+        },
+        commit,
+      );
+    })
+    .on("blur", hideTooltip)
+    .on("click", (event, commit) => {
+      window.open(commit.url, "_blank", "noopener,noreferrer");
+    })
+    .on("keydown", (event, commit) => {
+      if (event.key === "Enter") {
+        window.open(commit.url, "_blank", "noopener,noreferrer");
+      }
+    });
+}
+
+function updateFileDisplay() {
+  const lines = filteredCommits.flatMap((d) => d.lines);
+
+  const files = d3
+    .groups(lines, (d) => d.file)
+    .map(([name, lines]) => ({
+      name,
+      lines,
+    }))
+    .sort(
+      (a, b) =>
+        b.lines.length - a.lines.length ||
+        d3.ascending(a.name, b.name),
+    );
+
+  const rows = d3
+    .select("#files")
+    .selectAll(".file-row")
+    .data(files, (d) => d.name)
+    .join((enter) => {
+      const row = enter.append("div").attr("class", "file-row");
+      const term = row.append("dt");
+
+      term.append("code");
+      term.append("small");
+      row.append("dd");
+
+      return row;
+    });
+
+  rows.select("code").text((d) => d.name);
+
+  rows
+    .select("small")
+    .text((d) => `${d3.format(",")(d.lines.length)} lines`);
+
+  rows
+    .select("dd")
+    .attr("aria-label", (d) => `${d.name}: ${d.lines.length} lines`)
+    .selectAll(".loc")
+    .data(
+      (d) => d.lines,
+      (d) => d.line,
+    )
+    .join("span")
+    .attr("class", "loc")
+    .style("--color", (d) => technologyColors(d.type))
+    .attr(
+      "title",
+      (d) =>
+        `${d.type.toUpperCase()} · line ${d.line} · ${d.date.toLocaleDateString()}`,
+    );
+}
+
+function setCutoff(date) {
+  hideTooltip();
+
+  filteredCommits = commits.filter((d) => d.datetime <= date);
+  commitProgress = timeScale(date);
+
+  document.getElementById("commit-progress").value = commitProgress;
+
+  const cutoff = document.getElementById("commit-cutoff");
+
+  cutoff.dateTime = date.toISOString();
+  cutoff.textContent = date.toLocaleString(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+
+  document.getElementById("visible-commits").textContent =
+    `${filteredCommits.length} of ${commits.length} commits shown`;
+
+  chart.clearSelection();
+  updateScatterPlot();
+
+  renderCommitInfo(
+    filteredCommits.flatMap((d) => d.lines),
+    filteredCommits,
+  );
+
+  updateFileDisplay();
+}
+
+// The same update function serves both the slider and the scroll narrative.
+d3.select("#commit-progress").on("input", (event) => {
+  setCutoff(timeScale.invert(Number(event.target.value)));
+
+  d3.selectAll("#scatter-story .step").classed("is-active", false);
+});
+
+d3.select("#show-all").on("click", () => {
+  setCutoff(commits.at(-1).datetime);
+
+  d3.selectAll("#scatter-story .step").classed("is-active", false);
+});
+
+const steps = d3
+  .select("#scatter-story")
+  .selectAll(".step")
+  .data(commits, (d) => d.id)
+  .join("section")
+  .attr("class", "step");
+
+steps
+  .append("h3")
+  .text((d, i) => `Commit ${i + 1} of ${commits.length}`);
+
+steps
+  .append("time")
+  .attr("datetime", (d) => d.datetime.toISOString())
+  .text((d) =>
+    d.datetime.toLocaleString(undefined, {
+      dateStyle: "long",
+      timeStyle: "short",
+    }),
+  );
+
+steps.append("p").text((d) => {
+  const fileCount = new Set(d.lines.map((line) => line.file)).size;
+
+  return `${d.totalLines} current lines across ${fileCount} ${
+    fileCount === 1 ? "file are" : "files are"
+  } attributed to this commit. Scroll to reveal the next stage.`;
+});
+
+steps
+  .append("a")
+  .attr("href", (d) => d.url)
+  .attr("target", "_blank")
+  .attr("rel", "noopener noreferrer")
+  .text((d) => `View commit ${d.id}`);
+
+const legend = d3
+  .select("#technology-legend")
+  .selectAll("li")
+  .data(technologyColors.domain())
+  .join("li");
+
+legend
+  .append("span")
+  .attr("class", "technology-swatch")
+  .style("background", (d) => technologyColors(d));
+
+legend.append("span").text((d) => d.toUpperCase());
+
+setCutoff(commits.at(-1).datetime);
+
+const scroller = scrollama();
+
+scroller
+  .setup({
+    step: "#scatter-story .step",
+    offset: 0.5,
+  })
+  .onStepEnter(({ index }) => {
+    setCutoff(commits[index].datetime);
+
+    steps.classed("is-active", (d, i) => i === index);
+  });
+
+window.addEventListener("resize", () => scroller.resize());

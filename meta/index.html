@@ -4,32 +4,94 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Meta | Nicholas Puckdee</title>
+
     <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="meta.css" />
+
     <script type="module" src="../global.js"></script>
     <script type="module" src="main.js"></script>
   </head>
+
   <body>
     <h1>Meta</h1>
-    <p>This page explores the code and commit history of my portfolio.</p>
+    <p>
+      This page explores the code and commit history of my portfolio.
+      Scroll through the commit story to see the codebase develop.
+    </p>
 
-    <div id="stats"></div>
     <h2>Commits by time of day</h2>
     <p>
       Hover over a dot for commit details. Click a dot to open its GitHub
-      commit. Dot area represents the number of current lines attributed to that
-      commit.
+      commit. Dot area represents the number of current lines attributed
+      to that commit.
     </p>
-    <div id="chart"></div>
-    <p>Drag from an empty area of the chart to select commits.</p>
-    <button id="clear-selection" type="button">Clear selection</button>
-    <p id="selection-count" aria-live="polite">No commits selected</p>
 
-    <h3>Languages in selected commits</h3>
-    <dl id="language-breakdown" class="stats"></dl>
+    <div id="scrolly-1">
+      <div
+        id="scatter-story"
+        aria-label="Commit history narrative"
+      ></div>
+
+      <div id="scatter-plot">
+        <div class="time-controls">
+          <label for="commit-progress">Show commits until</label>
+          <time id="commit-cutoff"></time>
+
+          <input
+            type="range"
+            id="commit-progress"
+            min="0"
+            max="100"
+            step="0.01"
+            value="100"
+          />
+
+          <span id="visible-commits" aria-live="polite"></span>
+
+          <button type="button" id="show-all">
+            Show all commits
+          </button>
+        </div>
+
+        <div id="chart"></div>
+
+        <p>Drag from an empty area of the chart to select commits.</p>
+
+        <button id="clear-selection" type="button">
+          Clear selection
+        </button>
+
+        <p id="selection-count" aria-live="polite">
+          No commits selected
+        </p>
+
+        <h3>Languages in selected commits</h3>
+        <dl id="language-breakdown" class="stats"></dl>
+      </div>
+    </div>
+
+    <h2>Code at this stage</h2>
+    <div id="stats"></div>
+
+    <h2>The race for the biggest file</h2>
+    <p>
+      Each dot represents one current line of code attributed to a
+      commit at or before the selected time. Files are sorted by line
+      count, and color shows the technology. This is a view of surviving
+      code, not a complete historical snapshot.
+    </p>
+
+    <ul id="technology-legend" aria-label="Technology colors"></ul>
+    <dl id="files"></dl>
+
     <dl id="commit-tooltip" class="info tooltip" hidden>
       <dt>Commit</dt>
       <dd>
-        <a id="commit-link" target="_blank" rel="noopener noreferrer"></a>
+        <a
+          id="commit-link"
+          target="_blank"
+          rel="noopener noreferrer"
+        ></a>
       </dd>
 
       <dt>Date</dt>
